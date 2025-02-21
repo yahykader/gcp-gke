@@ -1,4 +1,4 @@
-name: Deploy Nginx
+name: Deploy app-api
 
 on:
   push:
@@ -26,13 +26,13 @@ jobs:
         GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
       run: |
         gcloud auth configure-docker europe-west9-docker.pkg.dev
-        docker build -t europe-west9-docker.pkg.dev/$GOOGLE_PROJECT/demo/nginx:latest .
-        docker push europe-west9-docker.pkg.dev/$GOOGLE_PROJECT/demo/nginx:latest
+        docker build -t europe-west9-docker.pkg.dev/$GOOGLE_PROJECT/demo/app-api:latest .
+        docker push europe-west9-docker.pkg.dev/$GOOGLE_PROJECT/demo/app-api:latest
 
     - name: deploy to gke
       env:
         GOOGLE_PROJECT: ${{ secrets.GOOGLE_PROJECT }}
       run: |
-        gcloud container clusters get-credentials autopilot-cluster-1 --region europe-west9
+        gcloud container clusters get-credentials demo1 --region europe-west9
         sed -i "s/GOOGLE_PROJECT/$GOOGLE_PROJECT/g" resources.yaml
         kubectl apply -f resources.yaml
